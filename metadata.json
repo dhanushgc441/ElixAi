@@ -1,0 +1,7 @@
+{
+  "name": "Elix AI Chat",
+  "description": "A professional, minimalistic AI chat application with a glassy dark theme, providing student-friendly explanations and maintaining chat history.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
