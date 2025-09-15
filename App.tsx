@@ -1,7 +1,7 @@
 import React from 'react';
 import Chat from './components/Chat';
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <div className="bg-black min-h-screen">
       <Chat />

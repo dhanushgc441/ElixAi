@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { AllChats, Chat, Message, Part, Role, GroundingChunk } from '../types';
+import { Role, Chat } from '../types';
 import { generateResponseStream, generateChatTitle, generateImage } from '../services/geminiService';
 import Sidebar from './Sidebar';
 import ChatView from './ChatView';
 
 const CHAT_STORAGE_KEY = 'elix_allChats';
 
-const ChatContainer: React.FC = () => {
-  const [allChats, setAllChats] = useState<AllChats>({});
-  const [activeChatId, setActiveChatId] = useState<string | null>(null);
+const ChatContainer = () => {
+  // FIX: Type the allChats state to resolve issues with unknown object properties.
+  const [allChats, setAllChats] = useState<{ [key: string]: Chat }>({});
+  const [activeChatId, setActiveChatId] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -27,7 +28,7 @@ const ChatContainer: React.FC = () => {
   
   const createNewChat = useCallback(() => {
     const newChatId = `chat_${Date.now()}`;
-    const newChat: Chat = {
+    const newChat = {
       id: newChatId,
       title: "New Chat",
       messages: [],
@@ -38,12 +39,12 @@ const ChatContainer: React.FC = () => {
     setIsSidebarOpen(false);
   }, []);
 
-  const selectChat = (id: string) => {
+  const selectChat = (id) => {
     setActiveChatId(id);
     setIsSidebarOpen(false);
   };
 
-  const handleGenerateImage = async (prompt: string, currentChatId: string) => {
+  const handleGenerateImage = async (prompt, currentChatId) => {
     setIsGenerating(true);
     // Add a placeholder message for the model response
     setAllChats(prev => ({
@@ -56,7 +57,7 @@ const ChatContainer: React.FC = () => {
     try {
         const imageBase64 = await generateImage(prompt);
         if (imageBase64) {
-            const imagePart: Part = { inlineData: { mimeType: 'image/png', data: imageBase64 } };
+            const imagePart = { inlineData: { mimeType: 'image/png', data: imageBase64 } };
             setAllChats(prev => {
                 const chats = { ...prev };
                 const chat = chats[currentChatId];
@@ -81,14 +82,14 @@ const ChatContainer: React.FC = () => {
     }
   }
 
-  const handleSendMessage = async (text: string, image?: { mimeType: string; data: string; }) => {
-    const userParts: Part[] = [];
+  const handleSendMessage = async (text, image) => {
+    const userParts = [];
     if (image) userParts.push({ inlineData: image });
     if (text) userParts.push({ text });
     if (userParts.length === 0) return;
 
-    let chatToUpdate: Chat;
-    let currentChatId: string;
+    let chatToUpdate;
+    let currentChatId;
     const isNewChat = !activeChatId;
 
     if (isNewChat) {
@@ -96,11 +97,11 @@ const ChatContainer: React.FC = () => {
         chatToUpdate = { id: currentChatId, title: "New Chat", messages: [], useWebSearch: true };
         setActiveChatId(currentChatId);
     } else {
-        currentChatId = activeChatId!;
+        currentChatId = activeChatId;
         chatToUpdate = allChats[currentChatId];
     }
     
-    const userMessage: Message = { role: Role.USER, parts: userParts };
+    const userMessage = { role: Role.USER, parts: userParts };
     const historyForAPI = chatToUpdate.messages; // History before adding the new user message.
     
     // Immediately update state with the user message.
@@ -142,7 +143,7 @@ const ChatContainer: React.FC = () => {
         const stream = generateResponseStream(historyForAPI, userParts, chatToUpdate.useWebSearch);
         
         let fullResponse = "";
-        let groundingMetadata: GroundingChunk[] = [];
+        let groundingMetadata = [];
         
         for await (const chunk of stream) {
             fullResponse += chunk.text;

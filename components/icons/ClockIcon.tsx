@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ClockIcon: React.FC<{ className?: string }> = () => {
+const ClockIcon = () => {
   return null;
 };
 

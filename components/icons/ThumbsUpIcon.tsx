@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ThumbsUpIcon: React.FC<{ className?: string }> = ({ className }) => (
+const ThumbsUpIcon = ({ className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"

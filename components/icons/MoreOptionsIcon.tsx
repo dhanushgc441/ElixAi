@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MoreOptionsIcon: React.FC<{ className?: string }> = ({ className }) => (
+const MoreOptionsIcon = ({ className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="currentColor"

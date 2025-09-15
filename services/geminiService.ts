@@ -1,5 +1,4 @@
-import { GoogleGenAI, Content, Part, GenerateContentResponse } from "@google/genai";
-import { Message } from '../types';
+import { GoogleGenAI } from "@google/genai";
 
 const SYSTEM_INSTRUCTION = "You are Elix, an all-in-one AI assistant. Your goal is to provide accurate, comprehensive, and well-structured information, similar to a knowledgeable expert. When asked to generate content, write, or explain, be thorough and clear. When web search is enabled, use it to provide up-to-date, factual answers and cite your sources. You can also generate high-quality images when asked naturally (e.g., 'create an image of...'). Be helpful, user-friendly, and format your responses using markdown for optimal readability.";
 
@@ -10,17 +9,18 @@ if (!process.env.API_KEY) {
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export async function* generateResponseStream(
-  history: Message[],
-  newParts: Part[],
-  useWebSearch: boolean
-): AsyncGenerator<GenerateContentResponse> {
-  const contents: Content[] = history.map(msg => ({
+  history,
+  newParts,
+  useWebSearch
+) {
+  const contents = history.map(msg => ({
     role: msg.role,
     parts: msg.parts.map(p => ({...p})) 
   }));
   contents.push({ role: 'user', parts: newParts });
 
-  const config: any = {
+  // FIX: Explicitly type config to allow for optional `tools` property.
+  const config: { systemInstruction: string; tools?: { googleSearch: {} }[] } = {
     systemInstruction: SYSTEM_INSTRUCTION,
   };
 
@@ -39,7 +39,7 @@ export async function* generateResponseStream(
   }
 };
 
-export const generateImage = async (prompt: string): Promise<string | null> => {
+export const generateImage = async (prompt) => {
     try {
         const response = await ai.models.generateImages({
             model: 'imagen-4.0-generate-001',
@@ -60,7 +60,7 @@ export const generateImage = async (prompt: string): Promise<string | null> => {
     }
 };
 
-export const generateChatTitle = async (prompt: string): Promise<string> => {
+export const generateChatTitle = async (prompt) => {
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ElixIcon: React.FC<{ className?: string }> = ({ className }) => (
+const ElixIcon = ({ className }) => (
     <svg 
         viewBox="0 0 24 24" 
         fill="none" 

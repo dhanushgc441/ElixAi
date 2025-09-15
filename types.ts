@@ -1,38 +1,27 @@
 
-export enum Role {
-  USER = 'user',
-  MODEL = 'model',
-}
+export const Role = {
+  USER: 'user',
+  MODEL: 'model',
+};
 
+// FIX: Add types for chat objects to resolve typing errors in Chat.tsx
 export interface Part {
-  text?: string;
-  inlineData?: {
-    mimeType: string;
-    data: string;
-  };
-}
-
-// FIX: Made web property optional to match the GroundingChunk type from @google/genai.
-export interface GroundingChunk {
-  web?: {
-    uri?: string;
-    title?: string;
-  };
+    text?: string;
+    inlineData?: {
+        mimeType: string;
+        data: string;
+    };
 }
 
 export interface Message {
-  role: Role;
-  parts: Part[];
-  groundingMetadata?: GroundingChunk[];
+    role: string;
+    parts: Part[];
+    groundingMetadata?: any[];
 }
 
 export interface Chat {
-  id: string;
-  title: string;
-  messages: Message[];
-  useWebSearch: boolean;
+    id: string;
+    title: string;
+    messages: Message[];
+    useWebSearch: boolean;
 }
-
-export type AllChats = {
-  [key: string]: Chat;
-};

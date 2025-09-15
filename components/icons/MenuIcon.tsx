@@ -1,6 +1,6 @@
 import React from 'react';
 
-const MenuIcon: React.FC<{ className?: string }> = ({ className }) => (
+const MenuIcon = ({ className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"

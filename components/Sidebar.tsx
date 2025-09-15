@@ -1,16 +1,7 @@
 import React from 'react';
-import { Chat } from '../types';
 import NewChatIcon from './icons/NewChatIcon';
 
-interface SidebarProps {
-  chats: Chat[];
-  activeChatId: string | null;
-  onSelectChat: (id: string) => void;
-  onNewChat: () => void;
-  isOpen: boolean;
-}
-
-const Sidebar: React.FC<SidebarProps> = ({ chats, activeChatId, onSelectChat, onNewChat, isOpen }) => {
+const Sidebar = ({ chats, activeChatId, onSelectChat, onNewChat, isOpen }) => {
   return (
     <div
       className={`absolute top-0 left-0 h-full bg-[#171717] text-white w-64 transform transition-transform duration-300 ease-in-out z-20 ${
